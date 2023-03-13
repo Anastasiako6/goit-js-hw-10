@@ -10,6 +10,11 @@ body {
   background-color: #fafafa;
   color: #212121;
   line-height: 1.5;
+  padding-left: 15px;
+}
+ul{
+  list-style: none;
+  padding-left: 0;
 }
 
 #search-box {
@@ -17,4 +22,27 @@ body {
   padding: 8px;
   max-width: 320px;
   margin-bottom: 16px;
+}
+
+
+.flex-item{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wrapper{
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+}
+
+.title-single{
+  font-size: 50px;
+}
+.text-single{
+  font-size: 25px;
+}
+.img-single{
+  width: 60px;
 }

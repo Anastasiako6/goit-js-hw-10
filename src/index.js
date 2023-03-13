@@ -11,156 +11,53 @@ const DEBOUNCE_DELAY = 300;
 
 input.addEventListener('input', debounce((e) => {
     const nameElem = input.value.trim();
-    // cleanHtml();
+    cleanHtml();
 
     if (nameElem !== '') {
         fetchCountries(nameElem).then(foundCountry => {
             if (foundCountry.length > 10) {
             Notiflix.Notify.info('Too many matches found. Please enter a more specific name.')
-            } else if (foundCountry === '') {
-                Notiflix.Notify.failure('Oops, there is no country with that name')
-            } else if (foundCountry.length >= 2 && foundCountry.length <= 2) {
+            } else if (foundCountry.length === 0) {
+                Notiflix.Notify.failure('Oops, there is no country with that name');
+            } else if (foundCountry.length >= 2 && foundCountry.length <= 10) {
                 showListCountry(foundCountry);
             } else if (foundCountry.length === 1) {
-                // showOneContry(foundCountry);
+                showOneContry(foundCountry);
         }
-    })
+    }).catch(error => console.log(error))
 }
 }, DEBOUNCE_DELAY))
 
-const createListItem = (item) => `<li>
-<img src ="${country.flags.svg}" alt="Flag of ${country.name.official}" width="30" hight="20">
-<p> ${country.name.official}</p>
-</li>`
+function showListCountry(countries) {
+  const countryList = countries
+    .map(country => {
+      return `<li class="flex-item">
+      <img src="${country.flags.svg}" alt="Flag of ${country.name.official}" width="30" hight="20">
+         <p>${country.name.official}</p>
+                </li>`;
+    })
+    .join('');
+  countryListElement.innerHTML = countryList;
+};
 
-const generateCountries = (countries) => countries.reduce((acc, item)=> acc + createListItem, "")
-
-function showListCountry (countries) { 
-    const createList = generateCountries(countries);
-    countryListElement.insertAdjacentHTML("beforeend", createList)
+function showOneContry(countries) {
+      const countryList = countries
+    .map(country => {
+      return `<li class="single-country">
+    <div class ="wrapper">
+    <img class="img-single" src="${country.flags.svg}" alt="Flag of ${country.name.official}" width="30" hight="20">
+        <p class ="title-single">${country.name.official}</p>
+        </div>
+        <p class ="text-single"><b>Capital</b>: ${country.capital}</p>
+        <p class ="text-single"><b>Population</b>: ${country.population}</p>
+        <p class ="text-single"><b>Languages</b>: ${Object.values(country.languages)} </p>
+        </li>`;
+    })
+    .join('');
+  countryListElement.innerHTML = countryList;
 }
-
-//     const markup = countries
-//     .map(country => {
-//       return `<li>
-//       <img src="${country.flags.svg}" alt="Flag of ${country.name.official
-//         }" width="30" hight="20">
-//          <p>${country.name.official}</p>
-//                 </li>`;
-//     })
-//         .join('');
-    
-//   countryList.innerHTML = markup;
-// }
-// function showOneContry(countries) {
-
-//   // перебір країни з масиву об'єктів
-//   const markup = countries
-//     .map(country => {
-//       return `<li>
-//       <img src="${country.flags.svg}" alt="Flag of ${country.name.official
-//         }" width="30" hight="20">
-//          <p>${country.name.official}</p>
-//             <p><b>Capital</b>: ${country.capital}</p>
-//             <p><b>Population</b>: ${country.population}</p>
-//             <p><b>Languages</b>: ${Object.values(country.languages)} </p>
-//                 </li>`;
-//     })
-//     .join(''); // сполучити рядки
-
-//   // вставлення li в ul на сторінку
-//   countryList.innerHTML = markup;
-// }
-// function cleanHtml() {
-//   countryListElement.innerHTML = '';
-//   countryInfoElement.innerHTML = '';
-// }
-// пошук елементів
-// const input = document.querySelector('#search-box');
-// const countryList = document.querySelector('.country-list');
-// const countryInfo = document.querySelector('.country-info');
-// const DEBOUNCE_DELAY = 300; // затримка для запиту
-
-// // слхухач події для input
-// input.addEventListener(
-//   'input',
-//   debounce(e => {
-
-//     // очистка пробілів перед значенням та після
-//     const trimmedValue = input.value.trim();
-//     cleanHtml(); // очистка списку та інформації
-
-//     // перевірка від зворотнього - чи значення НЕ пусте
-//     if (trimmedValue !== '') {
-
-//       // отримання списку країн
-//       fetchCountries(trimmedValue).then(foundData => {
-
-//         // якщо знайдено більше 10 країн - виводимо сповіщення
-//         if (foundData.length > 10) {
-//           Notiflix.Notify.info(
-//             'Too many matches found. Please enter a more specific name.'
-//           );
-
-//           // якщо знайдено 0 країн - виводимо сповіщення
-//         } else if (foundData.length === 0) {
-//           Notiflix.Notify.failure('Oops, there is no country with that name');
-
-//           // якщо знайдено >= 2 країн і <= 10 виводимо на сторінку дані
-//         } else if (foundData.length >= 2 && foundData.length <= 10) {
-
-//           renderCountryList(foundData); // вивід списку-країн на сторінку
-
-//           // якщо знайдена 1 країна - виводимо на сторінку 1 країну
-//         } else if (foundData.length === 1) {
-//           renderOneCountry(foundData); // вивід 1 країни на сторінку
-//         }
-//       });
-//     }
-//   }, DEBOUNCE_DELAY) // затримка для запиту
-// );
-
-// // вставлення розмітки на сторінку
-// function renderCountryList(countries) {
-
-//   // перебір країн з масиву об'єктів
-//   const markup = countries
-//     .map(country => {
-//       return `<li>
-//       <img src="${country.flags.svg}" alt="Flag of ${country.name.official
-//         }" width="30" hight="20">
-//          <p>${country.name.official}</p>
-//                 </li>`;
-//     })
-//     .join(''); // сполучити рядки
-
-//   // вставлення li в ul на сторінку
-//   countryList.innerHTML = markup;
-// }
-
-// // вставлення розмітки 1 країни
-// function renderOneCountry(countries) {
-
-//   // перебір країни з масиву об'єктів
-//   const markup = countries
-//     .map(country => {
-//       return `<li>
-//       <img src="${country.flags.svg}" alt="Flag of ${country.name.official
-//         }" width="30" hight="20">
-//          <p>${country.name.official}</p>
-//             <p><b>Capital</b>: ${country.capital}</p>
-//             <p><b>Population</b>: ${country.population}</p>
-//             <p><b>Languages</b>: ${Object.values(country.languages)} </p>
-//                 </li>`;
-//     })
-//     .join(''); // сполучити рядки
-
-//   // вставлення li в ul на сторінку
-//   countryList.innerHTML = markup;
-// }
-
-// // очистка списку країн та інформації про країну
-// function cleanHtml() {
-//   countryList.innerHTML = '';
-//   countryInfo.innerHTML = '';
-// }
+  
+function cleanHtml() {
+  countryListElement.innerHTML = '';
+  countryInfoElement.innerHTML = '';
+}
